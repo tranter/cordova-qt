@@ -138,10 +138,23 @@ Cordova.EventHandler.prototype.dispatchEvent = function() {
 /*
  * Create the custom Cordova events
  */
+
 Cordova.events = {
     deviceready: new Cordova.EventHandler( "deviceready" ),
     resume: new Cordova.EventHandler( "resume" ),
-    pause: new Cordova.EventHandler( "pause" )
+    pause: new Cordova.EventHandler( "pause" ),
+    online: new Cordova.EventHandler( "online" ),
+    offline: new Cordova.EventHandler( "offline" ),
+    backbutton: new Cordova.EventHandler( "backbutton" ),
+    batterycritical: new Cordova.EventHandler( "batterycritical" ),
+    batterylow: new Cordova.EventHandler( "batterylow" ),
+    batterystatus: new Cordova.EventHandler( "batterystatus" ),
+    menubutton: new Cordova.EventHandler( "menubutton" ),
+    searchbutton: new Cordova.EventHandler( "searchbutton" ),
+    startcallbutton: new Cordova.EventHandler( "startcallbutton" ),
+    endcallbutton: new Cordova.EventHandler( "endcallbutton" ),
+    volumedownbutton: new Cordova.EventHandler( "volumedownbutton" ),
+    volumeappbutton: new Cordova.EventHandler( "volumeappbutton" )
 };
 
 /*
@@ -184,4 +197,14 @@ document.dispatchEvent = function( evt ) {
  */
 Cordova.deviceready = function() {
     Cordova.events.deviceready.dispatchEvent();
+}
+
+Cordova.batteryStatusChanged = function(level, isPlugged) {
+    console.log("batteryStatusChanged: " + level + ", " + isPlugged)
+    if (level < 3)
+        Cordova.events.batterycritical.dispatchEvent(level, isPlugged)
+    else if (level < 40)
+        Cordova.events.batterylow.dispatchEvent(level, isPlugged)
+    else
+        Cordova.events.batterystatus.dispatchEvent(level, isPlugged)
 }
