@@ -3,6 +3,8 @@
 #include "../pluginregistry.h"
 #include "../cordova.h"
 
+#include <QKeyEvent>
+
 #include <QDebug>
 
 // Create static instance of ourself
@@ -14,7 +16,7 @@ Events *Events::m_events = new Events();
 Events::Events() :
     CPlugin()
 {
-    PluginRegistry::getRegistry()->registerPlugin( "com.phonegap.Events", this );
+    PluginRegistry::getRegistry()->registerPlugin( "com.cordova.Events", this );
 }
 
 /**
@@ -33,6 +35,54 @@ void Events::init()
     connect(m_batteryInfo, SIGNAL(remainingCapacityChanged(int,int)), this, SLOT(remainingCapacityChanged(int,int)));
     connect(m_batteryInfo, SIGNAL(chargerTypeChanged(QBatteryInfo::ChargerType)), this, SLOT(chargerTypeChanged(QBatteryInfo::ChargerType)));
 #endif
+    if (Cordova::instance()->topLevelEventsReceiver())
+        Cordova::instance()->topLevelEventsReceiver()->installEventFilter(this);
+}
+
+bool Events::eventFilter(QObject *obj, QEvent *ev)
+{
+    if (obj == Cordova::instance()->topLevelEventsReceiver()) {
+        if (ev->type() == QEvent::KeyRelease) {
+            QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>(ev);
+            if (!keyEvent)
+                return false;
+            switch (keyEvent->key()) {
+            case Qt::Key_Menu:
+                Cordova::instance()->execJS( QString("Cordova.menuKeyPressed();"));
+                break;
+            case Qt::Key_Back:
+                Cordova::instance()->execJS( QString("Cordova.backKeyPressed();"));
+                break;
+            case Qt::Key_Search:
+                Cordova::instance()->execJS( QString("Cordova.searchKeyPressed();"));
+                break;
+            case Qt::Key_Call:
+                Cordova::instance()->execJS( QString("Cordova.callKeyPressed();"));
+                break;
+            case Qt::Key_Hangup:
+                Cordova::instance()->execJS( QString("Cordova.hangupKeyPressed();"));
+                break;
+            default:
+                break;
+            }
+        } else if (ev->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>(ev);
+            if (!keyEvent)
+                return false;
+            switch (keyEvent->key()) {
+            case Qt::Key_VolumeUp:
+                Cordova::instance()->execJS( QString("Cordova.volumeUpKeyPressed();"));
+                break;
+            case Qt::Key_VolumeDown:
+                Cordova::instance()->execJS( QString("Cordova.volumeDownKeyPressed();"));
+                break;
+            default:
+                break;
+            }
+
+        }
+    }
+    return false;
 }
 
 #if QT_VERSION < 0x050000
@@ -64,7 +114,7 @@ void Events::remainingCapacityChanged(int battery, int capacity)
     bool isPlugged = m_batteryInfo->chargerType() == QBatteryInfo::UnknownCharger ||
             m_batteryInfo->chargerType() == QBatteryInfo::VariableCurrentCharger;
 #endif
-    Cordova::instance()->execJS( QString("PhoneGap.batteryStatusChanged(%1, %2);")
+    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2);")
                                   .arg(m_previousPercent)
                                   .arg(isPlugged));
 }
@@ -85,7 +135,7 @@ void Events::chargerTypeChanged(QBatteryInfo::ChargerType type)
     bool isPlugged = m_batteryInfo->chargerType() == QBatteryInfo::UnknownCharger ||
             m_batteryInfo->chargerType() == QBatteryInfo::VariableCurrentCharger;
 #endif
-    Cordova::instance()->execJS( QString("PhoneGap.batteryStatusChanged(%1, %2);")
+    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2);")
                                     .arg(m_previousPercent)
                                     .arg(isPlugged));
 }

@@ -154,7 +154,7 @@ Cordova.events = {
     startcallbutton: new Cordova.EventHandler( "startcallbutton" ),
     endcallbutton: new Cordova.EventHandler( "endcallbutton" ),
     volumedownbutton: new Cordova.EventHandler( "volumedownbutton" ),
-    volumeappbutton: new Cordova.EventHandler( "volumeappbutton" )
+    volumeupbutton: new Cordova.EventHandler( "volumeupbutton" )
 };
 
 /*
@@ -200,7 +200,7 @@ Cordova.deviceready = function() {
 }
 
 Cordova.batteryStatusChanged = function(level, isPlugged) {
-    console.log("batteryStatusChanged: " + level + ", " + isPlugged)
+    console.log("Cordova.batteryStatusChanged: " + level + ", " + isPlugged)
     if (level < 3)
         Cordova.events.batterycritical.dispatchEvent(level, isPlugged)
     else if (level < 40)
@@ -208,3 +208,31 @@ Cordova.batteryStatusChanged = function(level, isPlugged) {
     else
         Cordova.events.batterystatus.dispatchEvent(level, isPlugged)
 }
+
+Cordova.menuKeyPressed = function() {
+            console.log("Cordova.menuKeyPressed")
+            Cordova.events.menubutton.dispatchEvent();
+        }
+Cordova.backKeyPressed = function() {
+            console.log("Cordova.backKeyPressed")
+            Cordova.events.backbutton.dispatchEvent();
+        }
+Cordova.searchKeyPressed = function() {
+            console.log("Cordova.searchKeyPressed")
+            Cordova.events.searchbutton.dispatchEvent();
+        }
+Cordova.callKeyPressed = function() {
+            console.log("Cordova.callKeyPressed")
+            Cordova.events.startcallbutton.dispatchEvent();
+        }
+Cordova.hangupKeyPressed = function() {
+            console.log("Cordova.hangupKeyPressed")
+            Cordova.events.endcallbutton.dispatchEvent();
+        }
+Cordova.volumeUpKeyPressed = function() {
+            console.log("Cordova.volumeUpKeyPressed")
+            Cordova.events.volumedownbutton.dispatchEvent();}
+Cordova.volumeDownKeyPressed = function() {
+            console.log("Cordova.volumeDownKeyPressed")
+            Cordova.events.volumeupbutton.dispatchEvent();
+        }

@@ -27,6 +27,9 @@ signals:
 
 public slots:
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
+
 private slots:
 #if QT_VERSION < 0x050000
     void remainingCapacityChanged(int capacity);
