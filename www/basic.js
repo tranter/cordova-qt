@@ -119,10 +119,38 @@ function fileError( p_fileError ) {
     get("debug_output").innerHTML = p_filerError.code;
 }
 
+
 /*
  * Register for the device ready event
  */
 document.addEventListener( "deviceready", function() {
-                              get( "debug_output" ).innerHTML += "Device Ready!<br/>";
+                                              console.log("basicjs.deviceReady")
+                              get( "debug_output" ).innerHTML = "Device Ready!<br/>";
                           }, false );
 
+
+document.addEventListener("batterycritical", function (info) {
+                                                 console.log("basicjs.batteryCritical")
+                                               get( "debug_output" ).innerHTML = "Battery Level Critical " + info.level + "%<br/>";
+                                           }, false)
+
+
+document.addEventListener("batterylow", function (info) {
+                                            console.log("basicjs.batteryLow")
+                                               get( "debug_output" ).innerHTML = "Battery Level Low " + info.level + "%<br/>";
+                                           }, false)
+
+document.addEventListener("batterystatus", function (info) {
+                                               console.log("basicjs.batteryStatus")
+                                               get( "debug_output" ).innerHTML = "Battery Level Changed " + info.level + "%<br/>";
+                                           }, false)
+
+document.addEventListener("volumedownbutton", function () {
+                                                console.log("basicjs.volumeDownKeyPressed")
+                                               get( "debug_output" ).innerHTML = "Volume Down Button<br/>";
+                                           }, false)
+
+document.addEventListener("volumeupbutton", function () {
+                                              console.log("basicjs.volumeUpKeyPressed")
+                                               get( "debug_output" ).innerHTML = "Volume Up Button<br/>";
+                                           }, false)

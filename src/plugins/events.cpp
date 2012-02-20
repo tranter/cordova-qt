@@ -107,16 +107,16 @@ void Events::remainingCapacityChanged(int battery, int capacity)
         return;
     m_previousPercent = newPercent;
 #if QT_VERSION < 0x050000
-    bool isPlugged = m_batteryInfo->chargerType() == QSystemBatteryInfo::UnknownCharger ||
+    bool onBattery = m_batteryInfo->chargerType() == QSystemBatteryInfo::UnknownCharger ||
             m_batteryInfo->chargerType() == QSystemBatteryInfo::NoCharger ||
             m_batteryInfo->chargerType() == QSystemBatteryInfo::VariableCurrentCharger;
 #else
-    bool isPlugged = m_batteryInfo->chargerType() == QBatteryInfo::UnknownCharger ||
+    bool onBattery = m_batteryInfo->chargerType() == QBatteryInfo::UnknownCharger ||
             m_batteryInfo->chargerType() == QBatteryInfo::VariableCurrentCharger;
 #endif
-    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2);")
+    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2, false);")
                                   .arg(m_previousPercent)
-                                  .arg(isPlugged));
+                                  .arg(!onBattery));
 }
 
 #if QT_VERSION < 0x050000
@@ -135,7 +135,7 @@ void Events::chargerTypeChanged(QBatteryInfo::ChargerType type)
     bool isPlugged = m_batteryInfo->chargerType() == QBatteryInfo::UnknownCharger ||
             m_batteryInfo->chargerType() == QBatteryInfo::VariableCurrentCharger;
 #endif
-    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2);")
+    Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2, true);")
                                     .arg(m_previousPercent)
                                     .arg(isPlugged));
 }
