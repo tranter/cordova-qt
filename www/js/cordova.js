@@ -194,6 +194,25 @@ Cordova.deviceready = function() {
     Cordova.events.deviceready.dispatchEvent();
 }
 
+
+Cordova.resumeOccured = function() {
+            console.log("Cordova.resumeOccured")
+            Cordova.events.resume.dispatchEvent();
+        }
+Cordova.pauseOccured = function() {
+            console.log("Cordova.pauseOccured")
+            Cordova.events.pause.dispatchEvent();
+        }
+Cordova.onlineOccured = function() {
+            console.log("Cordova.onlineOccured")
+            Cordova.events.online.dispatchEvent();
+        }
+Cordova.offlineOccured = function() {
+            console.log("Cordova.offlineOccured")
+            Cordova.events.offline.dispatchEvent();
+        }
+
+
 Cordova.batteryStatusChanged = function(level, isPlugged, forceStatus) {
     console.log("Cordova.batteryStatusChanged: " + level + ", " + isPlugged + ", " + forceStatus)
     if (level < 3 && !forceStatus)

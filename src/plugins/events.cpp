@@ -4,6 +4,7 @@
 #include "../cordova.h"
 
 #include <QKeyEvent>
+#include <QNetworkConfigurationManager>
 
 #include <QDebug>
 
@@ -37,6 +38,8 @@ void Events::init()
 #endif
     if (Cordova::instance()->topLevelEventsReceiver())
         Cordova::instance()->topLevelEventsReceiver()->installEventFilter(this);
+    m_networkConfigurationManager = new QNetworkConfigurationManager(this);
+    connect(m_networkConfigurationManager, SIGNAL(onlineStateChanged(bool)), this, SLOT(onlineStatusChanged(bool)));
 }
 
 bool Events::eventFilter(QObject *obj, QEvent *ev)
@@ -79,7 +82,10 @@ bool Events::eventFilter(QObject *obj, QEvent *ev)
             default:
                 break;
             }
-
+        } else if (ev->type() == QEvent::WindowActivate) {
+            Cordova::instance()->execJS( QString("Cordova.resumeOccured();"));
+        } else if (ev->type() == QEvent::WindowDeactivate) {
+            Cordova::instance()->execJS( QString("Cordova.pauseOccured();"));
         }
     }
     return false;
@@ -137,5 +143,13 @@ void Events::chargerTypeChanged(QBatteryInfo::ChargerType type)
 #endif
     Cordova::instance()->execJS( QString("Cordova.batteryStatusChanged(%1, %2, true);")
                                     .arg(m_previousPercent)
-                                    .arg(isPlugged));
+                                 .arg(isPlugged));
+}
+
+void Events::onlineStatusChanged(bool isOnline)
+{
+    if (isOnline)
+        Cordova::instance()->execJS( QString("Cordova.onlineOccured();"));
+    else
+        Cordova::instance()->execJS( QString("Cordova.offlineOccured();"));
 }

@@ -125,20 +125,38 @@ function fileError( p_fileError ) {
  */
 document.addEventListener( "deviceready", function() {
                                               console.log("basicjs.deviceReady")
-                              get( "debug_output" ).innerHTML = "Device Ready!<br/>";
-                          }, false );
+                                              get( "debug_output" ).innerHTML = "Device Ready!<br/>";
+                                          }, false );
+
+document.addEventListener( "resume", function() {
+                                         console.log("basicjs.resume")
+                                     }, false );
+
+document.addEventListener( "pause", function() {
+                                        console.log("basicjs.pause")
+                                    }, false );
+
+document.addEventListener( "offline", function() {
+                                          console.log("basicjs.offline")
+                                          get( "debug_output" ).innerHTML += "We are offline :(<br/>";
+                                      }, false );
+
+document.addEventListener( "online", function() {
+                                         console.log("basicjs.online")
+                                         get( "debug_output" ).innerHTML += "We are online :)<br/>";
+                                     }, false );
 
 
 document.addEventListener("batterycritical", function (info) {
                                                  console.log("basicjs.batteryCritical")
-                                               get( "debug_output" ).innerHTML = "Battery Level Critical " + info.level + "%<br/>";
-                                           }, false)
+                                                 get( "debug_output" ).innerHTML = "Battery Level Critical " + info.level + "%<br/>";
+                                             }, false)
 
 
 document.addEventListener("batterylow", function (info) {
                                             console.log("basicjs.batteryLow")
-                                               get( "debug_output" ).innerHTML = "Battery Level Low " + info.level + "%<br/>";
-                                           }, false)
+                                            get( "debug_output" ).innerHTML = "Battery Level Low " + info.level + "%<br/>";
+                                        }, false)
 
 document.addEventListener("batterystatus", function (info) {
                                                console.log("basicjs.batteryStatus")
@@ -146,11 +164,11 @@ document.addEventListener("batterystatus", function (info) {
                                            }, false)
 
 document.addEventListener("volumedownbutton", function () {
-                                                console.log("basicjs.volumeDownKeyPressed")
-                                               get( "debug_output" ).innerHTML = "Volume Down Button<br/>";
-                                           }, false)
+                                                  console.log("basicjs.volumeDownKeyPressed")
+                                                  get( "debug_output" ).innerHTML = "Volume Down Button<br/>";
+                                              }, false)
 
 document.addEventListener("volumeupbutton", function () {
-                                              console.log("basicjs.volumeUpKeyPressed")
-                                               get( "debug_output" ).innerHTML = "Volume Up Button<br/>";
-                                           }, false)
+                                                console.log("basicjs.volumeUpKeyPressed")
+                                                get( "debug_output" ).innerHTML = "Volume Up Button<br/>";
+                                            }, false)

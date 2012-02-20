@@ -15,6 +15,8 @@
 QTM_USE_NAMESPACE
 #endif
 
+class QNetworkConfigurationManager;
+
 class Events : public CPlugin
 {
     Q_OBJECT
@@ -38,6 +40,7 @@ private slots:
     void remainingCapacityChanged(int battery, int capacity);
     void chargerTypeChanged(QBatteryInfo::ChargerType type);
 #endif
+    void onlineStatusChanged(bool isOnline);
 
 private:
     static Events *m_events;
@@ -49,6 +52,8 @@ private:
 #endif
 
     int m_previousPercent;
+
+    QNetworkConfigurationManager *m_networkConfigurationManager;
 };
 
 #endif // EVENTS_H
