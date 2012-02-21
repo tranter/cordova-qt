@@ -16,21 +16,27 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += systeminfo
     QT += sensors
     QT += quick declarative
-    OTHER_FILES += \
-        qml/main.qml \
+    OTHER_FILES += qml/main_qt5.qml \
         qml/cordova_wrapper.js
+} else:!isEmpty(MEEGO_VERSION_MAJOR) {
+    OTHER_FILES += qml/main_harmattan.qml \
+        qml/cordova_wrapper.js
+
+    QT += declarative
+    CONFIG += mobility qdeclarative-boostable
+    MOBILITY += feedback location systeminfo sensors
 } else {
-    SOURCES += mainwindow.cpp
-    HEADERS += mainwindow.h
-    FORMS += mainwindow.ui
+    OTHER_FILES += qml/main.qml \
+        qml/cordova_wrapper.js
 
     symbian:TARGET.UID3 = 0xE3522943
     #symbian:DEPLOYMENT.installer_header = 0x2002CCCF
     symbian:TARGET.CAPABILITY += NetworkServices
 
+    QT += declarative
+
     CONFIG += mobility
     MOBILITY += feedback location systeminfo sensors
-
 }
 
 QT += webkit
@@ -45,6 +51,7 @@ SOURCES += main.cpp \
     src/plugins/connection.cpp \
     src/plugins/compass.cpp \
     src/plugins/accelerometer.cpp \
+    src/plugins/events.cpp \
     src/cordova.cpp \
     src/cplugin.cpp \
     src/cwebpage.cpp
@@ -58,10 +65,10 @@ HEADERS += \
     src/plugins/connection.h \
     src/plugins/compass.h \
     src/plugins/accelerometer.h \
+    src/plugins/events.h \
     src/cordova.h \
     src/cplugin.h \
     src/cwebpage.h
-FORMS += mainwindow.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)

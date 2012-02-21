@@ -18,16 +18,22 @@
 #include "pluginregistry.h"
 #include "cwebpage.h"
 
+#include <qplatformdefs.h>
+
 #include <QDebug>
 #include <QXmlStreamReader>
+#include <QApplication>
 
 Cordova *Cordova::m_instance = 0;
 
 Cordova::Cordova(QObject *parent) : QObject(parent) {
-
-
+    m_topLevelEventsReceiver = 0;
     // Determine index file path
-    m_workingDir = QDir::current();
+    m_workingDir = QApplication::applicationDirPath();
+#ifdef MEEGO_EDITION_HARMATTAN
+    m_workingDir.cdUp();
+#endif
+    qDebug() << "Using" << m_workingDir.absolutePath() << "as working dir";
     QDir wwwDir( m_workingDir );
     wwwDir.cd( "www" );
 
@@ -98,13 +104,28 @@ void Cordova::loadFinished( bool ok ) {
     execJS( "Cordova.deviceready();" );
 }
 
+
+QString Cordova::workingDir() const
+{
+    return m_workingDir.absolutePath();
+}
+
 void Cordova::execJS(const QString &js)
 {
     emit javaScriptExecNeeded(js);
 }
 
-
 QString Cordova::mainUrl() const
 {
     return m_mainUrl;
+}
+
+void Cordova::setTopLevelEventsReceiver(QObject *obj)
+{
+    m_topLevelEventsReceiver = obj;
+}
+
+QObject *Cordova::topLevelEventsReceiver()
+{
+    return m_topLevelEventsReceiver;
 }

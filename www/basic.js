@@ -6,10 +6,10 @@ var vibration_length = 1000;
 
 function get(id)
 {
-	return document.getElementById(id);
+    return document.getElementById(id);
 }
 
-function init() 
+function init()
 {
     navigator.accelerometer.watchAcceleration(function (v) {
         get("accel_val").innerHTML = v.x + '   ' + v.y + '    ' + v.z;
@@ -17,7 +17,7 @@ function init()
 
 }
 
-function ping_google() 
+function ping_google()
 {
     navigator.network.isReachable('http://www.google.com', function (state) {
         if (state == NetworkStatus.NOT_REACHABLE) {
@@ -30,7 +30,7 @@ function ping_google()
 
 function test_vibra()
 {
-	navigator.notification.vibrate(vibration_length);
+    navigator.notification.vibrate(vibration_length);
     navigator.notification.beep(5);
 }
 
@@ -147,10 +147,56 @@ function fileError( p_fileError ) {
     get("debug_output").innerHTML = p_filerError.code;
 }
 
+
 /*
  * Register for the device ready event
  */
 document.addEventListener( "deviceready", function() {
-                              get( "debug_output" ).innerHTML = "Device Ready!";
-                          }, false );
+                                              console.log("basicjs.deviceReady")
+                                              get( "debug_output" ).innerHTML = "Device Ready!<br/>";
+                                          }, false );
 
+document.addEventListener( "resume", function() {
+                                         console.log("basicjs.resume")
+                                     }, false );
+
+document.addEventListener( "pause", function() {
+                                        console.log("basicjs.pause")
+                                    }, false );
+
+document.addEventListener( "offline", function() {
+                                          console.log("basicjs.offline")
+                                          get( "debug_output" ).innerHTML += "We are offline :(<br/>";
+                                      }, false );
+
+document.addEventListener( "online", function() {
+                                         console.log("basicjs.online")
+                                         get( "debug_output" ).innerHTML += "We are online :)<br/>";
+                                     }, false );
+
+
+document.addEventListener("batterycritical", function (info) {
+                                                 console.log("basicjs.batteryCritical")
+                                                 get( "debug_output" ).innerHTML = "Battery Level Critical " + info.level + "%<br/>";
+                                             }, false)
+
+
+document.addEventListener("batterylow", function (info) {
+                                            console.log("basicjs.batteryLow")
+                                            get( "debug_output" ).innerHTML = "Battery Level Low " + info.level + "%<br/>";
+                                        }, false)
+
+document.addEventListener("batterystatus", function (info) {
+                                               console.log("basicjs.batteryStatus")
+                                               get( "debug_output" ).innerHTML = "Battery Level Changed " + info.level + "%<br/>";
+                                           }, false)
+
+document.addEventListener("volumedownbutton", function () {
+                                                  console.log("basicjs.volumeDownKeyPressed")
+                                                  get( "debug_output" ).innerHTML = "Volume Down Button<br/>";
+                                              }, false)
+
+document.addEventListener("volumeupbutton", function () {
+                                                console.log("basicjs.volumeUpKeyPressed")
+                                                get( "debug_output" ).innerHTML = "Volume Up Button<br/>";
+                                            }, false)

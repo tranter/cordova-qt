@@ -20,27 +20,56 @@
 #include "src/cordova.h"
 
 #if QT_VERSION < 0x050000
-# include "mainwindow.h"
+# include <QDeclarativeView>
 #else
 # include <QQuickView>
-# include <QDeclarativeContext>
-# include <QDeclarativeEngine>
 #endif
 
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <qplatformdefs.h>
+
+#ifdef MEEGO_EDITION_HARMATTAN
+# include <MDeclarativeCache>
+#endif
+
+#ifdef MEEGO_EDITION_HARMATTAN
+Q_DECL_EXPORT int main(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
-    QApplication app(argc, argv);
+
+#ifdef MEEGO_EDITION_HARMATTAN
+    QScopedPointer<QApplication> app(MDeclarativeCache::qApplication(argc, argv));
+#else
+    QScopedPointer<QApplication> app(new QApplication(argc, argv));
+#endif
 
 #if QT_VERSION < 0x050000
-    MainWindow mainWindow;
-    mainWindow.setOrientation(MainWindow::ScreenOrientationAuto);
-    mainWindow.showExpanded();
-#else
+# ifdef MEEGO_EDITION_HARMATTAN
+    QScopedPointer<QDeclarativeView> view(MDeclarativeCache::qDeclarativeView());
+# else
+    QScopedPointer<QDeclarativeView> view(new QDeclarativeView());
+# endif
+    Cordova::instance()->setTopLevelEventsReceiver(view.data());
+    view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view->rootContext()->setContextProperty("cordova", Cordova::instance());
+# ifdef MEEGO_EDITION_HARMATTAN
+    view->setSource(QUrl(QString("%1/qml/main_harmattan.qml").arg(Cordova::instance()->workingDir())));
+    view->showFullScreen();
+# else
+    view->setSource(QUrl(QString("%1/qml/main.qml").arg(Cordova::instance()->workingDir())));
+    view->show();
+# endif
+#else // QT_VERSION >= 0x050000
     QQuickView view;
+    Cordova::instance()->setTopLevelEventsReceiver(&view);
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("cordova", Cordova::instance());
-    view.setSource(QUrl(QString("%1/qml/main.qml").arg(QApplication::applicationDirPath())));
+    view.setSource(QUrl(QString("%1/qml/main_qt5.qml").arg(Cordova::instance()->workingDir())));
     view.show();
 #endif
 
-    return app.exec();
+    return app->exec();
 }

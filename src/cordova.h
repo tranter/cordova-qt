@@ -35,7 +35,10 @@ class Cordova : public QObject
 public:
     static Cordova *instance();
 
+    QString workingDir() const;
     QString mainUrl() const;
+    void setTopLevelEventsReceiver(QObject *obj);
+    QObject *topLevelEventsReceiver();
 
 signals:
     void javaScriptExecNeeded(const QString &js);
@@ -53,6 +56,8 @@ private:
     Q_DISABLE_COPY(Cordova)
 
     static Cordova *m_instance;
+
+    QObject *m_topLevelEventsReceiver;
 
     QDir m_workingDir;
     QString m_mainUrl;
