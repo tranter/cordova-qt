@@ -34,6 +34,22 @@ function test_vibra()
     navigator.notification.beep(5);
 }
 
+function test_alert_confirm()
+{
+    //native javascript alert and confirm only support showing message,
+    //title and button name are ignored.
+    navigator.notification.alert("This is an alert.",
+                                 function alertDismissed() {// do nothing here
+                                 }, "title", "buttonName");
+    navigator.notification.confirm("This is a confirm.",
+                                   function onConfirm(button) {
+                                       if ( button === 0) {
+                                           alert('User input: No');
+                                       } else {alert('User input: Yes');}
+                                   }, "title", "buttonName");
+}
+
+
 function getCurrentPosition() {
     navigator.geolocation.getCurrentPosition( function( position ) {
                                                  get( "position_val" ).innerHTML = position.coords.latitude + " / " + position.coords.longitude;
